@@ -1,4 +1,4 @@
-"""Load default numerical parameters from the configs/ directory."""
+"""Load default numerical parameters from the packaged config/data/ directory."""
 
 from __future__ import annotations
 
@@ -7,7 +7,13 @@ from pathlib import Path
 
 import numpy as np
 
-_CONFIGS_DIR = Path(__file__).parent.parent.parent / "configs"
+# Package-internal location (src/occupancy/config/data/*.json), bundled into
+# the wheel via [tool.setuptools.package-data]. The repo-root configs/
+# directory these files are mirrored from is a dev convenience only — it
+# isn't shipped in an installed package, so resolving against __file__'s
+# repo-root-relative position (the previous behavior) broke for anyone who
+# `pip install`-ed rather than working from a source checkout.
+_CONFIGS_DIR = Path(__file__).parent / "config" / "data"
 
 
 def _read_json(filename: str) -> dict:
