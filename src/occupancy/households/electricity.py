@@ -22,7 +22,7 @@ _BASE_EQUIPMENT: dict[str, EquipmentSpec] = normalize_equipment_table(
     load_json_resource(_PACKAGE, _EQUIPMENT_PATH)
 )
 
-# Top-level-exportable registry of the 29 household equipment ids, mirroring
+# Top-level-exportable registry of the household equipment ids, mirroring
 # `SERVICE_BUILDING_TYPES`'s promotion (buem's `occupancy_gains_handoff.md`
 # Gap 3) -- closes buem's `occupancy_module_activities.md` item 1. Lets a
 # downstream consumer validate/enumerate against the live registry (e.g.
