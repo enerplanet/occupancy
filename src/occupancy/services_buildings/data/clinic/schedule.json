@@ -1,0 +1,21 @@
+{
+  "_comment": "Informed by the DOE/NREL Outpatient Health Care reference building (Deru et al. 2011, ~40,900 ft^2, 3 floors -- the correct analog for a clinic, as opposed to the 24/7 Hospital prototype) and EIA CBECS 2018 (overall health-care category mean ~60 operating hours/week, i.e. weekday daytime + partial Saturday, sharply different from a hospital's continuous pattern). fixed_schedule can only express one weekday window and one weekend window (not a distinct Saturday-only pattern), so the weekend window below approximates a shorter Saturday-only opening -- Sunday closure is therefore slightly understated. Illustrative, not survey-calibrated. gain_w_per_m2 (12 W/m^2) approximates ASHRAE 90.1 Table 9.5.1 outpatient health-care lighting power density (~0.87-1.0 W/ft^2 ~ 9.4-10.8 W/m^2) plus a modest illustrative margin for diagnostic/medical equipment. Blended with (not replacing) the per-occupant gains -- see core/buem_adapter.py to_buem_profiles().",
+  "id": "clinic",
+  "description": "Outpatient clinic. Weekday daytime hours plus a shorter Saturday-like weekend window (approximated -- see _comment); closed overnight, unlike a 24/7 hospital.",
+  "region": "NL",
+  "capacity_default": 50,
+  "generator": "fixed_schedule",
+  "generator_params": {
+    "open_hour": 7,
+    "close_hour": 19,
+    "weekend_open_hour": 8,
+    "weekend_close_hour": 13,
+    "closed_weekends": false,
+    "peak_occupancy_fraction": 0.7,
+    "active_fraction": 0.55,
+    "noise": 0.07
+  },
+  "heat_gain_present_kw": 0.100,
+  "heat_gain_active_kw": 0.150,
+  "gain_w_per_m2": 12
+}

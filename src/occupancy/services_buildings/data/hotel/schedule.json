@@ -1,0 +1,31 @@
+{
+  "_comment": "Occupancy day-shape and occupant density informed by DOE/NREL Commercial Reference Building Models (Deru et al. 2011, NREL/TP-5500-46861, Large Hotel prototype: ~336 ft^2/person, LPD ~1.0 W/ft^2) and ASHRAE 90.1 Table 9.5.1 (Hotel/Motel LPD 0.70 W/ft^2) / ASHRAE 62.1 Table 6-1 (lobby ~30 people/1000 ft^2, sleeping-area analog ~20/1000 ft^2). The exact hour-by-hour occupancy_fraction/asleep_probabilities curves below are this repo's own illustrative interpolation between those reference points, not a literal reproduction of a published Schedule:Compact table -- not survey/metering-calibrated. gain_w_per_m2 (8 W/m^2) uses this same ASHRAE 90.1 Table 9.5.1 Hotel/Motel LPD figure (0.70 W/ft^2 ~ 7.5 W/m^2, rounded), blended with (not replacing) the per-occupant gains -- see core/buem_adapter.py to_buem_profiles(). Uses hourly_occupancy_curve (not fixed_schedule) because a hotel has no single open/close window: near-constant overnight guest presence plus a checkout dip and check-in peak, which a rectangular open/close/peak model can't represent.",
+  "id": "hotel",
+  "description": "Mid-size hotel. Near-continuous occupancy (overnight guests) with checkout/check-in day-shape; guests sleep overnight, front-desk/housekeeping staff work daytime shifts.",
+  "region": "NL",
+  "capacity_default": 120,
+  "generator": "hourly_occupancy_curve",
+  "generator_params": {
+    "occupancy_fraction": [
+      [0.85, 0.88], [0.85, 0.88], [0.85, 0.88], [0.85, 0.88],
+      [0.85, 0.88], [0.82, 0.85], [0.75, 0.80], [0.65, 0.75],
+      [0.55, 0.70], [0.45, 0.65], [0.40, 0.60], [0.38, 0.58],
+      [0.40, 0.60], [0.42, 0.62], [0.42, 0.62], [0.45, 0.62],
+      [0.50, 0.65], [0.58, 0.68], [0.65, 0.72], [0.72, 0.78],
+      [0.78, 0.82], [0.82, 0.85], [0.85, 0.87], [0.85, 0.88]
+    ],
+    "active_fraction": 0.30,
+    "noise": 0.05
+  },
+  "asleep_probabilities": [
+    [0.85, 0.85], [0.95, 0.95], [0.97, 0.97], [0.97, 0.97],
+    [0.95, 0.95], [0.85, 0.85], [0.50, 0.55], [0.20, 0.30],
+    [0.05, 0.10], [0.02, 0.05], [0.02, 0.05], [0.02, 0.05],
+    [0.02, 0.05], [0.05, 0.08], [0.05, 0.08], [0.02, 0.05],
+    [0.02, 0.05], [0.02, 0.03], [0.02, 0.03], [0.02, 0.03],
+    [0.03, 0.03], [0.05, 0.05], [0.20, 0.15], [0.55, 0.50]
+  ],
+  "heat_gain_present_kw": 0.100,
+  "heat_gain_active_kw": 0.140,
+  "gain_w_per_m2": 8
+}

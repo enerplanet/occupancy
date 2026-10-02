@@ -18,15 +18,23 @@ occupancy --help
 
 ## Config Files
 
-All default numerical parameters are in `configs/` — edit these instead of
-touching Python source:
+All default numerical parameters live in bundled JSON under each
+subpackage's own `data/` folder — edit these instead of touching Python
+source:
 
-- `configs/occupancy_probabilities.json` — hourly home/active probability arrays
-- `configs/electricity_weightage.json` — appliance usage-weight tables
-- `configs/default_scenario.json` — scenario defaults (year, persons, flags)
+- `src/occupancy/households/data/archetypes/*.json` — per-archetype
+  occupancy probabilities, generator strategy, equipment overrides
+- `src/occupancy/households/data/equipment.json` — household appliance
+  specs
+- `src/occupancy/services_buildings/data/<type>/schedule.json` /
+  `equipment.json` — per building-type schedule and equipment specs
+- `src/occupancy/config/data/default_scenario.json` — CLI scenario
+  defaults (year, persons, building type, flags)
 
 To test a custom scenario, pass `--config <path>` on the CLI or call
-`load_scenario_config(path)` in Python.
+`load_scenario_config(path)` in Python. To add a new appliance, household
+archetype, or service-building type, see the extension points in
+`CLAUDE.md` — it's a config addition, not a Python change.
 
 ## Code Quality
 

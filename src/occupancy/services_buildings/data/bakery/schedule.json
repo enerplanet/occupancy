@@ -1,0 +1,21 @@
+{
+  "_comment": "Occupant density/hours informed by ASHRAE 62.1 Table 6-1 (retail sales ~15 people/1000 ft^2) and EIA CBECS 2018 (food-sales category mean ~110 operating hours/week, i.e. ~16h/day) -- no dedicated DOE bakery prototype exists, closest DOE analog is Stand-alone Retail/Strip Mall. Early opening reflects pre-open baking; illustrative, not survey-calibrated. gain_w_per_m2 (30 W/m^2) approximates ASHRAE 90.1 Table 9.5.1 retail lighting power density (~1.14 W/ft^2 ~ 12.3 W/m^2) plus a substantial illustrative margin for oven/baking equipment running through most open hours -- higher than restaurant's since ovens are closer to continuously on rather than intermittent cooking. Blended with (not replacing) the per-occupant gains -- see core/buem_adapter.py to_buem_profiles().",
+  "id": "bakery",
+  "description": "Small bakery / neighborhood retail. Early opening for baking, open 7 days.",
+  "region": "NL",
+  "capacity_default": 25,
+  "generator": "fixed_schedule",
+  "generator_params": {
+    "open_hour": 6,
+    "close_hour": 19,
+    "weekend_open_hour": 7,
+    "weekend_close_hour": 17,
+    "closed_weekends": false,
+    "peak_occupancy_fraction": 0.65,
+    "active_fraction": 0.9,
+    "noise": 0.1
+  },
+  "heat_gain_present_kw": 0.100,
+  "heat_gain_active_kw": 0.170,
+  "gain_w_per_m2": 30
+}

@@ -25,14 +25,16 @@ conda-bld/
 !.vscode/settings.json
 .dmypy.json
 .ruff_cache/
-.pytest_cache/
 .coverage
+coverage.xml
 htmlcov/
 
 # Local runtime artifacts
 outputs/
 data/
 !src/occupancy/config/data/
+!src/occupancy/households/data/
+!src/occupancy/services_buildings/data/
 *.sif
 *.nc
 *.nc4
@@ -58,8 +60,6 @@ Thumbs.db
 
 # Git Push
 push.sh
-push.ps1
-.commit-message.md
 push.ps1
 .commit-message.md
 

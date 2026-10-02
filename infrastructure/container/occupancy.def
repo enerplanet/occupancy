@@ -4,7 +4,6 @@ From: continuumio/miniconda3:24.1.2-0
 %files
     infrastructure/env/occupancy_env.yml /opt/occupancy_env.yml
     src/ /app/src/
-    configs/ /app/configs/
 
 %environment
     export PATH=/opt/conda/envs/occupancy_env/bin:$PATH

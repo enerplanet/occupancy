@@ -1,0 +1,36 @@
+{
+  "_comment": "Illustrative power ratings, not calibrated.",
+  "refrigeration": {
+    "category": "refrigeration",
+    "rated_power_kw": 3.0,
+    "standby_power_kw": 0.0,
+    "strategy": "flat_always_on",
+    "strategy_params": {},
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  },
+  "kitchen_equipment": {
+    "category": "kitchen",
+    "rated_power_kw": 12.0,
+    "standby_power_kw": 0.0,
+    "strategy": "probabilistic_event",
+    "strategy_params": { "gate": "present", "intercept": 0.8, "active_fraction_scale": 0.0 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  },
+  "extraction_fan": {
+    "category": "ventilation",
+    "rated_power_kw": 2.0,
+    "standby_power_kw": 0.0,
+    "strategy": "probabilistic_event",
+    "strategy_params": { "gate": "present", "intercept": 1.0, "active_fraction_scale": 0.0 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  }
+}

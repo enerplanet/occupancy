@@ -1,8 +1,8 @@
 from occupancy.config import ScenarioConfig, load_scenario_config
-from occupancy.electricity.electricity_consumption import (
+from occupancy.households import (
     ElectricityConsumptionProfile,
+    HouseholdProfile,
 )
-from occupancy.internal_gains.occupancy_profile import OccupancyProfile
 
 
 def test_default_scenario_config_round_trips() -> None:
@@ -10,8 +10,11 @@ def test_default_scenario_config_round_trips() -> None:
 
     assert config.year == 2026
     assert config.num_persons == 3
-    assert config.home_probabilities.shape == (24, 2)
-    assert config.weightage_table["tv"].weekday.shape == (24,)
+    assert config.building_type == "household"
+    assert config.archetype == "generic"
+    assert config.region == "NL"
+    assert config.home_probabilities is None
+    assert config.equipment is None
 
 
 def test_load_scenario_config_with_overrides(tmp_path) -> None:
@@ -23,7 +26,9 @@ def test_load_scenario_config_with_overrides(tmp_path) -> None:
             "year": 2027,
             "num_persons": 4,
             "seed": 7,
-            "include_electricity": true
+            "include_electricity": true,
+            "archetype": "family_with_children",
+            "region": "NL"
           },
           "occupancy": {
             "home_probabilities": [
@@ -54,26 +59,33 @@ def test_load_scenario_config_with_overrides(tmp_path) -> None:
     assert config.num_persons == 4
     assert config.seed == 7
     assert config.include_electricity is True
+    assert config.archetype == "family_with_children"
     assert config.home_probabilities[0, 0] == 1.0
     assert config.active_probabilities[1, 1] == 1.0
 
 
-def test_weightage_override_from_mapping() -> None:
+def test_equipment_override_from_mapping() -> None:
     config = ScenarioConfig.from_mapping(
         {
             "scenario": {"year": 2028, "num_persons": 2},
             "electricity": {
-                "weightage_table": {
-                    "tv": {"weekday": [0.0] * 24, "weekend": [0.0] * 24},
-                    "cooking": {"weekday": [0.0] * 24, "weekend": [0.0] * 24},
-                    "laundry": {"weekday": [0.0] * 24, "weekend": [0.0] * 24},
-                    "cleaning": {"weekday": [0.0] * 24, "weekend": [0.0] * 24},
+                "equipment": {
+                    "tv": {
+                        "weekday": [0.0] * 24,
+                        "weekend": [0.0] * 24,
+                        "rated_power_kw": 0.25,
+                    },
+                    "cooking": {
+                        "weekday": [0.0] * 24,
+                        "weekend": [0.0] * 24,
+                        "rated_power_kw": 1.5,
+                    },
                 }
             },
         }
     )
 
-    occupancy = OccupancyProfile(
+    household = HouseholdProfile(
         num_persons=config.num_persons,
         year=config.year,
         seed=config.seed,
@@ -81,8 +93,8 @@ def test_weightage_override_from_mapping() -> None:
         active_probabilities=config.active_probabilities,
     )
     electricity = ElectricityConsumptionProfile(
-        occupancy_profile=occupancy,
-        weightage_table=config.weightage_table,
+        occupancy_profile=household,
+        equipment=config.equipment,
     )
 
-    assert electricity.get_weightage_table()["tv"].weekday[0] == 0.0
+    assert electricity.get_equipment_table()["tv"].weekday[0] == 0.0

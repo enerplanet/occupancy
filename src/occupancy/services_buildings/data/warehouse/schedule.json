@@ -1,0 +1,19 @@
+{
+  "_comment": "Occupant density informed by ASHRAE 62.1 Table 6-1 (warehouse ~2 people/1000 ft^2 -- sparse, bulk storage floor is mostly unoccupied) and DOE/NREL Commercial Reference Building Models (Deru et al. 2011) non-refrigerated Warehouse prototype (~52,000 ft^2, 1 floor, distinct office vs. bulk-storage schedule sets -- this repo models one blended occupant count, not separate zones). Illustrative, not survey-calibrated. gain_w_per_m2 (5 W/m^2) approximates ASHRAE 90.1 Table 9.5.1 non-refrigerated warehouse lighting power density (~0.66 W/ft^2 ~ 7.1 W/m^2), rounded down to reflect that most of a warehouse's floor area is sparse bulk storage with minimal equipment beyond lighting (this type does not model a separate refrigerated zone). Blended with (not replacing) the per-occupant gains -- see core/buem_adapter.py to_buem_profiles().",
+  "id": "warehouse",
+  "description": "Warehouse / bulk storage with a small admin office. Weekday shift, closed weekends.",
+  "region": "NL",
+  "capacity_default": 15,
+  "generator": "fixed_schedule",
+  "generator_params": {
+    "open_hour": 7,
+    "close_hour": 18,
+    "closed_weekends": true,
+    "peak_occupancy_fraction": 0.8,
+    "active_fraction": 0.8,
+    "noise": 0.08
+  },
+  "heat_gain_present_kw": 0.100,
+  "heat_gain_active_kw": 0.200,
+  "gain_w_per_m2": 5
+}

@@ -1,0 +1,21 @@
+{
+  "_comment": "Illustrative defaults, not survey-calibrated. gain_w_per_m2 (25 W/m^2) approximates ASHRAE 90.1 Table 9.5.1 dining-area lighting power density (~1.0 W/ft^2 ~ 11 W/m^2) plus a substantial illustrative margin for commercial kitchen cooking equipment, which dominates a restaurant's actual equipment gain and isn't captured by LPD alone. Blended with (not replacing) the per-occupant gains -- see core/buem_adapter.py to_buem_profiles().",
+  "id": "restaurant",
+  "description": "Food service. Open 7 days, lunch-to-late-evening hours.",
+  "region": "NL",
+  "capacity_default": 60,
+  "generator": "fixed_schedule",
+  "generator_params": {
+    "open_hour": 11,
+    "close_hour": 23,
+    "weekend_open_hour": 11,
+    "weekend_close_hour": 23,
+    "closed_weekends": false,
+    "peak_occupancy_fraction": 0.5,
+    "active_fraction": 0.95,
+    "noise": 0.12
+  },
+  "heat_gain_present_kw": 0.100,
+  "heat_gain_active_kw": 0.170,
+  "gain_w_per_m2": 25
+}

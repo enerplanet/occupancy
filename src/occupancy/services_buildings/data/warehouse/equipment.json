@@ -1,0 +1,36 @@
+{
+  "_comment": "Illustrative power ratings, not calibrated. No refrigerated-warehouse variant yet (see .claude/services/open.md).",
+  "material_handling": {
+    "category": "process",
+    "rated_power_kw": 5.0,
+    "standby_power_kw": 0.0,
+    "strategy": "probabilistic_event",
+    "strategy_params": { "gate": "active", "intercept": 0.7, "active_fraction_scale": 0.0 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  },
+  "warehouse_lighting": {
+    "category": "lighting",
+    "rated_power_kw": 6.0,
+    "standby_power_kw": 0.0,
+    "strategy": "probabilistic_event",
+    "strategy_params": { "gate": "present", "intercept": 1.0, "active_fraction_scale": 0.0 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  },
+  "office_plug_loads": {
+    "category": "plug_load",
+    "rated_power_kw": 0.1,
+    "standby_power_kw": 0.0,
+    "strategy": "linear_in_occupants",
+    "strategy_params": { "weekend_multiplier": 1.0 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  }
+}

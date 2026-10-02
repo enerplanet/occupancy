@@ -21,8 +21,9 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-  "numpy>=1.26,<3.0",
-  "pandas>=2.0,<3.0",
+  "numpy>=1.26",
+  "pandas>=2.0",
+  "scipy>=1.11",
 ]
 
 [project.optional-dependencies]
@@ -47,15 +48,21 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "occupancy.config" = ["data/*.json"]
+"occupancy.households" = [
+    "data/*.json",
+    "data/*.csv",
+    "data/archetypes/*.json",
+]
+"occupancy.services_buildings" = ["data/*/*.json"]
 
 [tool.setuptools_scm]
-fallback_version = "1.1.0"
+fallback_version = "3.0.0"
 version_scheme = "guess-next-dev"
 local_scheme = "node-and-date"
 version_file = "src/occupancy/_version.py"
 
 [tool.ruff]
-line-length = 88
+line-length = 79
 target-version = "py312"
 src = ["src"]
 

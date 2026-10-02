@@ -1,33 +1,23 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 
-from occupancy._defaults import (
-    HOURLY_ACTIVE_PROBABILITIES,
-    HOURLY_HOME_PROBABILITIES,
-)
-from occupancy.electricity.electricity_consumption import (
-    ApplianceWeights,
-    ElectricityConsumptionProfile,
-)
+from occupancy.core.equipment import EquipmentSpec, normalize_equipment_table
 
 _DEFAULT_SCENARIO_PATH = files("occupancy.config").joinpath(
     "data/default_scenario.json"
 )
 
 
-def _normalize_probability_array(
-    value: Any,
-    fallback: np.ndarray,
-) -> np.ndarray:
+def _normalize_probability_array(value: Any) -> np.ndarray | None:
     if value is None:
-        return np.asarray(fallback, dtype=float)
+        return None
     array = np.asarray(value, dtype=float)
     if array.shape != (24, 2):
         raise ValueError("probability arrays must have shape (24, 2)")
@@ -36,11 +26,23 @@ def _normalize_probability_array(
 
 @dataclass(frozen=True)
 class ScenarioConfig:
+    """CLI-facing scenario configuration.
+
+    ``num_persons`` doubles as the household occupant count or the service-
+    building capacity, depending on ``building_type``. Any field left at its
+    default is resolved from the selected household archetype / service
+    building type at profile-construction time -- this config only carries
+    *overrides*, it doesn't duplicate their defaults.
+    """
+
     year: int
     num_persons: int
     seed: int | None = None
     include_electricity: bool = False
     output: Path = Path("outputs/occupancy_profile.csv")
+    building_type: str = "household"
+    archetype: str = "generic"
+    region: str = "NL"
     has_cooking: bool = True
     has_tv: bool = True
     has_laundry: bool = True
@@ -48,17 +50,10 @@ class ScenarioConfig:
     has_ironing: bool = True
     has_fridge: bool = True
     has_other: bool = True
-    home_probabilities: np.ndarray = field(
-        default_factory=lambda: HOURLY_HOME_PROBABILITIES.copy(),
-    )
-    active_probabilities: np.ndarray = field(
-        default_factory=lambda: HOURLY_ACTIVE_PROBABILITIES.copy(),
-    )
-    weightage_table: dict[str, ApplianceWeights] = field(
-        default_factory=(
-            ElectricityConsumptionProfile._default_weightage_table
-        ),
-    )
+    has_lighting: bool = True
+    home_probabilities: np.ndarray | None = None
+    active_probabilities: np.ndarray | None = None
+    equipment: dict[str, EquipmentSpec] | None = None
 
     @classmethod
     def default(cls) -> ScenarioConfig:
@@ -73,17 +68,12 @@ class ScenarioConfig:
         occupancy = mapping.get("occupancy", {})
         electricity = mapping.get("electricity", {})
 
-        weightage_table = electricity.get("weightage_table")
-        if weightage_table is None:
-            weightage_table = (
-                ElectricityConsumptionProfile._default_weightage_table()
-            )
-        else:
-            weightage_table = (
-                ElectricityConsumptionProfile._normalize_weightage_table(
-                    weightage_table,
-                )
-            )
+        equipment_data = electricity.get("equipment")
+        equipment = (
+            normalize_equipment_table(equipment_data)
+            if equipment_data is not None
+            else None
+        )
 
         return cls(
             year=int(scenario["year"]),
@@ -95,6 +85,9 @@ class ScenarioConfig:
             output=Path(
                 scenario.get("output", "outputs/occupancy_profile.csv")
             ),
+            building_type=scenario.get("building_type", "household"),
+            archetype=scenario.get("archetype", "generic"),
+            region=scenario.get("region", "NL"),
             has_cooking=bool(scenario.get("has_cooking", True)),
             has_tv=bool(scenario.get("has_tv", True)),
             has_laundry=bool(scenario.get("has_laundry", True)),
@@ -102,15 +95,14 @@ class ScenarioConfig:
             has_ironing=bool(scenario.get("has_ironing", True)),
             has_fridge=bool(scenario.get("has_fridge", True)),
             has_other=bool(scenario.get("has_other", True)),
+            has_lighting=bool(scenario.get("has_lighting", True)),
             home_probabilities=_normalize_probability_array(
                 occupancy.get("home_probabilities"),
-                HOURLY_HOME_PROBABILITIES,
             ),
             active_probabilities=_normalize_probability_array(
                 occupancy.get("active_probabilities"),
-                HOURLY_ACTIVE_PROBABILITIES,
             ),
-            weightage_table=weightage_table,
+            equipment=equipment,
         )
 
 

@@ -1,0 +1,47 @@
+{
+  "_comment": "Illustrative power ratings, not calibrated. No thermal/HVAC/hot-water loads here -- that stays buem's job.",
+  "corridor_lighting": {
+    "category": "lighting",
+    "rated_power_kw": 6.0,
+    "standby_power_kw": 0.0,
+    "strategy": "flat_always_on",
+    "strategy_params": {},
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  },
+  "room_lighting": {
+    "category": "lighting",
+    "rated_power_kw": 5.0,
+    "standby_power_kw": 0.0,
+    "strategy": "probabilistic_event",
+    "strategy_params": { "gate": "present", "intercept": 0.7, "active_fraction_scale": 0.3 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  },
+  "guest_plug_loads": {
+    "category": "plug_load",
+    "rated_power_kw": 0.06,
+    "standby_power_kw": 0.0,
+    "strategy": "linear_in_occupants",
+    "strategy_params": { "weekend_multiplier": 1.1 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  },
+  "laundry": {
+    "category": "wet",
+    "rated_power_kw": 10.0,
+    "standby_power_kw": 0.0,
+    "strategy": "probabilistic_event",
+    "strategy_params": { "gate": "none", "weekday_rate": 0.35, "weekend_rate": 0.30 },
+    "weekday": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    "weekend": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  }
+}

@@ -5,19 +5,23 @@
     "seed": 42,
     "include_electricity": true,
     "output": "outputs/default_scenario.csv",
+    "building_type": "household",
+    "archetype": "generic",
+    "region": "NL",
     "has_cooking": true,
     "has_tv": true,
     "has_laundry": true,
     "has_cleaning": true,
     "has_ironing": true,
     "has_fridge": true,
-    "has_other": true
+    "has_other": true,
+    "has_lighting": true
   },
   "occupancy": {
     "home_probabilities": null,
     "active_probabilities": null
   },
   "electricity": {
-    "weightage_table": null
+    "equipment": null
   }
 }
