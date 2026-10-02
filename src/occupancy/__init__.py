@@ -1,6 +1,9 @@
 """Occupancy modeling package for UU-BUEM: households and service buildings."""
 
-from occupancy.building_demand import (
+from occupancy.core.buem_adapter import to_buem_profiles
+from occupancy.core.disaggregation import estimate_equipment_usage
+from occupancy.core.result import OccupancyResult
+from occupancy.demand import (
     DEFAULT_ARCHETYPE_BY_BUILDING_TYPE,
     DEFAULT_NUM_PERSONS,
     RESIDENTIAL_BUILDING_TYPES,
@@ -8,11 +11,9 @@ from occupancy.building_demand import (
     BuildingDemand,
     building_demand,
     derive_service_capacity,
+    equipment_table,
     resolve_num_persons,
 )
-from occupancy.core.buem_adapter import to_buem_profiles
-from occupancy.core.disaggregation import estimate_equipment_usage
-from occupancy.core.result import OccupancyResult
 from occupancy.households import (
     EQUIPMENT_TYPES,
     HOUSEHOLD_ARCHETYPES,
@@ -53,6 +54,7 @@ __all__ = [
     "__version__",
     "building_demand",
     "derive_service_capacity",
+    "equipment_table",
     "estimate_equipment_usage",
     "generate_dhw_draws",
     "resolve_num_persons",

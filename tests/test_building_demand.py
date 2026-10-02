@@ -15,7 +15,7 @@ import pandas as pd
 import pytest
 
 from occupancy import building_demand
-from occupancy.building_demand import (
+from occupancy.demand import (
     DEFAULT_NUM_PERSONS,
     BuildingDemand,
     bracket_household_size,

@@ -13,6 +13,9 @@ The electricity scalars need no weather and no envelope: a grid model
 calls :func:`building_demand` with a building type, a country and the
 number of dwellings and reads ``annual_electricity_kwh`` and
 ``peak_electricity_kw``.
+
+This module is ``occupancy.demand``; the package exports the function
+as ``occupancy.building_demand``.
 """
 
 from __future__ import annotations
@@ -234,7 +237,7 @@ def _realign(
     return aligned
 
 
-def _equipment_table(
+def equipment_table(
     household: HouseholdProfile, seed: int | None, equipment: Any
 ) -> dict[str, Any] | None:
     """Apply a ``{equipment_id: bool}`` selector to the household's
@@ -313,7 +316,7 @@ def _generate_household(
     household = HouseholdProfile(
         num_persons=num_persons, year=year, seed=seed, archetype=archetype
     )
-    table = _equipment_table(household, seed, equipment)
+    table = equipment_table(household, seed, equipment)
     elec_gen = ElectricityConsumptionProfile(
         household, equipment=table, seed=seed
     )
