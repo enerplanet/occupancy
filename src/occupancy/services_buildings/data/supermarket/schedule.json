@@ -1,0 +1,21 @@
+{
+  "_comment": "Illustrative defaults, not survey-calibrated. gain_w_per_m2 (14 W/m^2) approximates ASHRAE 90.1 Table 9.5.1 grocery-store lighting power density (~0.9 W/ft^2 ~ 9.7 W/m^2) plus an illustrative margin for open refrigerated-display-case equipment load, which LPD alone doesn't capture. Blended with (not replacing) the per-occupant gains -- see core/buem_adapter.py to_buem_profiles().",
+  "id": "supermarket",
+  "description": "Grocery retail. Open 7 days, extended weekday hours.",
+  "region": "NL",
+  "capacity_default": 80,
+  "generator": "fixed_schedule",
+  "generator_params": {
+    "open_hour": 8,
+    "close_hour": 21,
+    "weekend_open_hour": 9,
+    "weekend_close_hour": 18,
+    "closed_weekends": false,
+    "peak_occupancy_fraction": 0.6,
+    "active_fraction": 0.95,
+    "noise": 0.08
+  },
+  "heat_gain_present_kw": 0.100,
+  "heat_gain_active_kw": 0.180,
+  "gain_w_per_m2": 14
+}

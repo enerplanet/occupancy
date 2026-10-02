@@ -1,0 +1,168 @@
+"""building_demand reproduces the numbers buem derived before the move.
+
+``tests/data/buem_reference_occupancy_6_0_0.json`` was captured from
+buem at 253029f with occupancy 6.0.0 for nine buildings: annual
+electricity, its hourly peak, internal gains, DHW litres, cooking
+energy and the first day of the electricity series. Every case must
+match to floating-point precision, which is what shows that moving the
+rules here changed nothing.
+"""
+
+import json
+from pathlib import Path
+
+import pandas as pd
+import pytest
+
+from occupancy import building_demand
+from occupancy.demand import (
+    DEFAULT_NUM_PERSONS,
+    BuildingDemand,
+    bracket_household_size,
+    derive_service_capacity,
+    resolve_num_persons,
+)
+
+_FIXTURE = (
+    Path(__file__).parent / "data" / "buem_reference_occupancy_6_0_0.json"
+)
+_REFERENCE = json.loads(_FIXTURE.read_text(encoding="utf-8"))
+_CASES = sorted(_REFERENCE["cases"])
+_GAIN = _REFERENCE["_meta"]["cooking_heat_gain_fraction"]
+_YEAR = _REFERENCE["_meta"]["year"]
+
+
+def _call(inputs: dict) -> BuildingDemand:
+    kwargs = {
+        "country": inputs.get("country"),
+        "region_code": inputs.get("region_code"),
+        "year": _YEAR,
+        "residential_units": inputs.get("residential_units", 1.0),
+        "floor_area_m2": inputs.get("A_ref"),
+        "cooking_carrier": inputs.get("cooking_carrier", "electric"),
+        "num_persons": inputs.get("num_persons"),
+        "archetype": inputs.get("archetype"),
+        "capacity": inputs.get("capacity"),
+        "equipment": inputs.get("equipment"),
+        "cooking_heat_gain_fraction": _GAIN,
+    }
+    return building_demand(inputs["building_type"], **kwargs)
+
+
+def _assert_series(series: pd.Series | None, expected: dict | None) -> None:
+    if expected is None:
+        assert series is None
+        return
+    assert series is not None
+    tol = dict(rel=1e-9, abs=1e-9)
+    assert float(series.sum()) == pytest.approx(expected["sum"], **tol)
+    assert float(series.max()) == pytest.approx(expected["max"], **tol)
+    assert float(series.mean()) == pytest.approx(expected["mean"], **tol)
+    assert [float(x) for x in series.iloc[:24]] == pytest.approx(
+        expected["head24"], **tol
+    )
+
+
+@pytest.mark.parametrize("case", _CASES)
+def test_matches_buem_reference(case: str) -> None:
+    ref = _REFERENCE["cases"][case]
+    demand = _call(ref["inputs"])
+    _assert_series(demand.electricity, ref["elecLoad"])
+    _assert_series(demand.internal_gains, ref["Q_ig"])
+    _assert_series(demand.occ_nothome, ref["occ_nothome"])
+    _assert_series(demand.occ_sleeping, ref["occ_sleeping"])
+    _assert_series(demand.cooking_kwh, ref["cooking_kwh"])
+    _assert_series(demand.cooking_active, ref["cooking_active"])
+    dhw = (
+        None
+        if demand.dhw_draws is None
+        else demand.dhw_draws["dhw_liters_total"]
+    )
+    _assert_series(dhw, ref["dhw_liters"])
+    assert demand.num_persons == ref["num_persons_resolved"]
+    assert demand.elec_load_as_gain is ref["elec_load_as_gain"]
+    assert demand.annual_electricity_kwh == pytest.approx(
+        ref["elecLoad"]["sum"], rel=1e-9
+    )
+    assert demand.peak_electricity_kw == pytest.approx(
+        ref["elecLoad"]["max"], rel=1e-9
+    )
+
+
+def test_grid_model_call_needs_no_weather_or_envelope() -> None:
+    demand = building_demand("SFH", country="NL", residential_units=1)
+    assert demand.annual_electricity_kwh > 0
+    assert demand.peak_electricity_kw > 0
+    assert demand.num_persons == 2.55
+    assert demand.archetype == "family_with_children"
+    assert demand.capacity is None
+
+
+def test_num_persons_lookup_order() -> None:
+    assert (
+        resolve_num_persons("MFH", country="NL", region_code="GM0200") == 1.37
+    )
+    assert resolve_num_persons("MFH", country="NL") == 1.54
+    assert (
+        resolve_num_persons("MFH", country="NL", region_code="GM9999") == 1.54
+    )
+    assert resolve_num_persons("MFH", country="DE") == 1.9
+    assert resolve_num_persons("MFH") == 1.9
+    assert resolve_num_persons("bakery", country="NL") is None
+    assert resolve_num_persons("bakery", default=DEFAULT_NUM_PERSONS) == 4.0
+
+
+def test_bracket_household_size() -> None:
+    assert bracket_household_size(2.0) == (2, 2, 0.0)
+    assert bracket_household_size(2.995) == (3, 3, 0.0)
+    assert bracket_household_size(0.4) == (1, 2, pytest.approx(0.4))
+    lower, upper, weight = bracket_household_size(2.55)
+    assert (lower, upper) == (2, 3)
+    assert weight == pytest.approx(0.55)
+
+
+def test_derive_service_capacity() -> None:
+    assert derive_service_capacity("bakery", 80.0) == 8
+    assert derive_service_capacity("office", 4.0) == 1
+    assert derive_service_capacity("office", None) is None
+    assert derive_service_capacity("SFH", 100.0) is None
+
+
+def test_unknown_building_type_is_rejected() -> None:
+    with pytest.raises(ValueError, match="neither a residential TABULA code"):
+        building_demand("castle", floor_area_m2=100.0)
+
+
+def test_service_building_needs_floor_area() -> None:
+    with pytest.raises(ValueError, match="floor_area_m2 is required"):
+        building_demand("office")
+
+
+def test_bad_cooking_carrier_is_rejected() -> None:
+    with pytest.raises(ValueError, match="cooking_carrier"):
+        building_demand("SFH", country="NL", cooking_carrier="coal")
+
+
+def test_gas_moves_cooking_out_of_electricity_only() -> None:
+    electric = building_demand("SFH", country="NL")
+    gas = building_demand("SFH", country="NL", cooking_carrier="gas")
+    assert gas.cooking_kwh is not None
+    removed = electric.annual_electricity_kwh - gas.annual_electricity_kwh
+    assert removed == pytest.approx(float(gas.cooking_kwh.sum()), rel=1e-9)
+    assert gas.dhw_draws["dhw_liters_total"].sum() == pytest.approx(
+        electric.dhw_draws["dhw_liters_total"].sum()
+    )
+
+
+def test_measured_elec_load_is_used_unscaled() -> None:
+    index = pd.date_range(f"{_YEAR}-01-01", periods=8760, freq="h")
+    measured = pd.Series(1.5, index=index, name="elecLoad")
+    demand = building_demand(
+        "MFH",
+        country="NL",
+        residential_units=4,
+        elec_load=measured,
+        cooking_carrier="gas",
+    )
+    assert demand.annual_electricity_kwh == pytest.approx(1.5 * 8760)
+    assert demand.internal_gains.sum() > 0

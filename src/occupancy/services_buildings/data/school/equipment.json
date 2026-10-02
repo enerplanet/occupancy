@@ -1,0 +1,25 @@
+{
+  "_comment": "Illustrative power ratings, not calibrated. kitchen weight arrays restrict meal service to lunch hours (11-13).",
+  "classroom_equipment": {
+    "category": "plug_load",
+    "rated_power_kw": 10.0,
+    "standby_power_kw": 0.0,
+    "strategy": "probabilistic_event",
+    "strategy_params": { "gate": "present", "intercept": 1.0, "active_fraction_scale": 0.0 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  },
+  "kitchen": {
+    "category": "kitchen",
+    "rated_power_kw": 8.0,
+    "standby_power_kw": 0.0,
+    "strategy": "probabilistic_event",
+    "strategy_params": { "gate": "present", "intercept": 1.0, "active_fraction_scale": 0.0 },
+    "weekday": [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 1.0,
+                1.0, 1.0, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05],
+    "weekend": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  }
+}

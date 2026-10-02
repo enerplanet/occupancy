@@ -45,8 +45,12 @@ def check_conda_env(env_name: str = "occupancy_env") -> bool:
 
     code, out, err = run_cmd(
         [
-            "conda", "run", "-n", env_name,
-            "python", "-c",
+            "conda",
+            "run",
+            "-n",
+            env_name,
+            "python",
+            "-c",
             "import numpy, pandas; print('OK')",
         ],
     )
@@ -63,8 +67,14 @@ def check_cli(env_name: str = "occupancy_env") -> bool:
 
     code, out, err = run_cmd(
         [
-            "conda", "run", "-n", env_name,
-            "python", "-m", "occupancy", "--help",
+            "conda",
+            "run",
+            "-n",
+            env_name,
+            "python",
+            "-m",
+            "occupancy",
+            "--help",
         ],
     )
     if code != 0:
@@ -79,8 +89,16 @@ def check_tests(env_name: str = "occupancy_env") -> bool:
     print("\n[3/4] Running test suite...")
     code, out, err = run_cmd(
         [
-            "conda", "run", "-n", env_name,
-            "python", "-m", "pytest", "tests/", "-v", "--tb=short",
+            "conda",
+            "run",
+            "-n",
+            env_name,
+            "python",
+            "-m",
+            "pytest",
+            "tests/",
+            "-v",
+            "--tb=short",
         ],
     )
     if code != 0:
@@ -99,13 +117,19 @@ def check_package_structure() -> bool:
         ("src/occupancy/__main__.py", "Module entry point"),
         ("src/occupancy/cli.py", "CLI module"),
         ("src/occupancy/_version.py", "Version file"),
+        ("src/occupancy/core/occupancy_engine.py", "Shared occupancy engine"),
+        ("src/occupancy/core/equipment.py", "Shared equipment model"),
         (
-            "src/occupancy/internal_gains/occupancy_profile.py",
-            "Occupancy profile",
+            "src/occupancy/households/household_profile.py",
+            "Household occupancy profile",
         ),
         (
-            "src/occupancy/electricity/electricity_consumption.py",
-            "Electricity profile",
+            "src/occupancy/households/electricity.py",
+            "Household electricity profile",
+        ),
+        (
+            "src/occupancy/services_buildings/building_profile.py",
+            "Service building profile",
         ),
         ("src/occupancy/config/__init__.py", "Config subpackage"),
         ("infrastructure/env/occupancy_env.yml", "Conda environment spec"),

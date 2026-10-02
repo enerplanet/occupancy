@@ -1,0 +1,19 @@
+{
+  "_comment": "Illustrative defaults, not survey-calibrated. gain_w_per_m2 (9 W/m^2) approximates ASHRAE 90.1 Table 9.5.1 office lighting power density (0.79 W/ft^2 ~ 8.5 W/m^2), rounded; no separate equipment-load figure added since office plug loads are already broadly covered by the per-occupant heat_gain_active_kw split. Blended with (not replacing) the per-occupant gains -- see core/buem_adapter.py to_buem_profiles().",
+  "id": "office",
+  "description": "Office building. Weekday business hours, closed weekends.",
+  "region": "NL",
+  "capacity_default": 40,
+  "generator": "fixed_schedule",
+  "generator_params": {
+    "open_hour": 8,
+    "close_hour": 18,
+    "closed_weekends": true,
+    "peak_occupancy_fraction": 0.75,
+    "active_fraction": 0.9,
+    "noise": 0.1
+  },
+  "heat_gain_present_kw": 0.100,
+  "heat_gain_active_kw": 0.130,
+  "gain_w_per_m2": 9
+}

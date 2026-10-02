@@ -1,0 +1,20 @@
+{
+  "_comment": "Illustrative defaults, not survey-calibrated. closed_months models the summer holiday via the generic fixed_schedule param -- no bespoke Python calendar logic needed. gain_w_per_m2 (9 W/m^2) approximates ASHRAE 90.1 Table 9.5.1 school/university lighting power density (~0.87 W/ft^2 ~ 9.4 W/m^2), rounded. Blended with (not replacing) the per-occupant gains -- see core/buem_adapter.py to_buem_profiles().",
+  "id": "school",
+  "description": "Primary/secondary school. Weekday term-time hours, closed weekends and July-August.",
+  "region": "NL",
+  "capacity_default": 300,
+  "generator": "fixed_schedule",
+  "generator_params": {
+    "open_hour": 8,
+    "close_hour": 16,
+    "closed_weekends": true,
+    "closed_months": [7, 8],
+    "peak_occupancy_fraction": 0.85,
+    "active_fraction": 0.95,
+    "noise": 0.05
+  },
+  "heat_gain_present_kw": 0.085,
+  "heat_gain_active_kw": 0.120,
+  "gain_w_per_m2": 9
+}

@@ -1,0 +1,47 @@
+{
+  "_comment": "Illustrative power ratings, not calibrated against real bakery metering.",
+  "oven": {
+    "category": "kitchen",
+    "rated_power_kw": 8.0,
+    "standby_power_kw": 0.5,
+    "strategy": "probabilistic_event",
+    "strategy_params": { "gate": "present", "intercept": 0.6, "active_fraction_scale": 0.0 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  },
+  "refrigeration": {
+    "category": "refrigeration",
+    "rated_power_kw": 2.0,
+    "standby_power_kw": 0.0,
+    "strategy": "flat_always_on",
+    "strategy_params": {},
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  },
+  "lighting": {
+    "category": "lighting",
+    "rated_power_kw": 3.0,
+    "standby_power_kw": 0.0,
+    "strategy": "probabilistic_event",
+    "strategy_params": { "gate": "present", "intercept": 1.0, "active_fraction_scale": 0.0 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  },
+  "checkout": {
+    "category": "plug_load",
+    "rated_power_kw": 0.03,
+    "standby_power_kw": 0.0,
+    "strategy": "linear_in_occupants",
+    "strategy_params": { "weekend_multiplier": 1.0 },
+    "weekday": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+    "weekend": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+  }
+}

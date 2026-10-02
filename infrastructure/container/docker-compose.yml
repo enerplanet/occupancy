@@ -6,7 +6,6 @@ services:
     image: occupancy:latest
     volumes:
       - ../../src:/app/src:ro
-      - ../../configs:/app/configs:ro
       - ${OCCUPANCY_OUTPUT_DIR:-../../outputs}:/app/outputs
     environment:
       PYTHONPATH: /app/src

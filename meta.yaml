@@ -1,4 +1,4 @@
-{% set version = environ.get("GIT_DESCRIBE_TAG", "1.1.0").lstrip("v") %}
+{% set version = environ.get("GIT_DESCRIBE_TAG", "3.0.0").lstrip("v") %}
 package:
   name: occupancy
   version: {{ version }}
@@ -18,8 +18,9 @@ requirements:
     - setuptools-scm >=8
   run:
     - python >=3.12
-    - numpy >=1.26,<3
-    - pandas >=2.0,<3
+    - numpy >=1.26
+    - pandas >=2.0
+    - scipy >=1.11
 
 test:
   imports:
