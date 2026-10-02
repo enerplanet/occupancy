@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [6.1.0+enerplanet.1] - 2026-10-02
+
+First release of the enerplanet fork. Package version `6.1.0+enerplanet.1`,
+git tag `v6.1.0-enerplanet.1`, installed by pip from the tag. Based on
+upstream v6.0.0.
+
+### Added
+
+- `occupancy.building_demand()` and `BuildingDemand`: per-building demand
+  in one call. Resolves household size by building type, country and
+  region from the bundled `num_persons_by_building_type.csv`, a default
+  archetype per residential type, and service capacity from floor area;
+  blends the two integer household sizes around a fractional mean;
+  scales to the dwellings in a building; applies the cooking-carrier
+  balance between electricity and internal gains. Returns the hourly
+  electricity series with its annual kWh and peak kW, the internal gains,
+  occupancy fractions, DHW draws and cooking energy. These rules moved
+  here from buem so that buem and the grid model size from one function;
+  `tests/test_building_demand.py` pins buem's numbers before the move.
+- `RESIDENTIAL_BUILDING_TYPES`, `DEFAULT_NUM_PERSONS`,
+  `DEFAULT_ARCHETYPE_BY_BUILDING_TYPE`, `SERVICE_FLOOR_AREA_PER_OCCUPANT_M2`,
+  `resolve_num_persons()` and `derive_service_capacity()` as public names.
+
+### Changed
+
+- The package version is set in `pyproject.toml` instead of being derived
+  from git tags, so a fork tag maps to one explicit version string.
+
 ## [6.0.0] - 2026-08-28
 
 ### Changed

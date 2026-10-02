@@ -1,10 +1,12 @@
 [build-system]
-requires = ["setuptools>=68", "wheel", "setuptools-scm>=8"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "occupancy"
-dynamic = ["version"]
+# Fork releases are git tags vX.Y.Z-enerplanet.N carrying the package
+# version X.Y.Z+enerplanet.N; the version is set here by hand at release.
+version = "6.1.0+enerplanet.1"
 description = "Stochastic occupancy and residential electricity profile modeling for UU-BUEM."
 readme = "README.md"
 license = "MIT"
@@ -54,12 +56,6 @@ where = ["src"]
     "data/archetypes/*.json",
 ]
 "occupancy.services_buildings" = ["data/*/*.json"]
-
-[tool.setuptools_scm]
-fallback_version = "3.0.0"
-version_scheme = "guess-next-dev"
-local_scheme = "node-and-date"
-version_file = "src/occupancy/_version.py"
 
 [tool.ruff]
 line-length = 79

@@ -30,8 +30,10 @@ from occupancy.services_buildings import (
 OccupancyProfile = HouseholdProfile
 
 try:
-    from occupancy._version import __version__
-except ImportError:
+    from importlib.metadata import version as _dist_version
+
+    __version__ = _dist_version("occupancy")
+except Exception:  # noqa: BLE001 -- not installed as a distribution
     __version__ = "unknown"
 
 __all__ = [
