@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [6.2.0+enerplanet.1] - 2026-10-08
+
+Package version `6.2.0+enerplanet.1`, git tag `v6.2.0-enerplanet.1`.
+Merges upstream `UU-BUEM/occupancy` main at e035323, whose household
+equipment table is the one the BuEM research paper describes.
+
+**Results change for every household.** With the same household size,
+annual electricity rises by roughly 40 per cent and cooking energy by
+30 to 100 per cent; hot water, occupancy fractions and service buildings
+are unchanged. Pinned figures: SFH NL 2,326.5 to 3,294.1 kWh electricity
+and 357.3 to 731.8 kWh cooking; TH NL 2,535.0 to 3,257.4 and 430.5 to
+549.1 kWh.
+
 ### Added
 
 - 8 new household equipment items to `households/data/equipment.json`
@@ -36,6 +49,11 @@ All notable changes to this project will be documented in this file.
   calls (`_ownership_note` in the JSON), not cited survey figures; power/
   timing arrays are untouched and remain CREST-sourced for the residual
   owners.
+- `tests/test_building_demand.py` pins this release's own
+  `building_demand` output
+  (`tests/data/building_demand_reference_6_2_0_enerplanet_1.json`) in
+  place of the 6.0.0 capture from buem, whose residential cases no longer
+  hold with the new table; service cases are unchanged.
 
 ## [6.1.0+enerplanet.1] - 2026-10-02
 
