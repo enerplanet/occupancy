@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- 8 new household equipment items to `households/data/equipment.json`
+  reflecting appliances common in 2026 NL households that CREST's 2008
+  UK survey predates: `laptop`, `smart_speaker`, `wifi_router`,
+  `streaming_stick`, `robot_vacuum`, `air_fryer`, `coffee_machine`, and
+  `ev_charger`. Ownership/power figures for all but `ev_charger` are
+  estimated and explicitly flagged `_source: "estimated, unsourced"` in
+  the JSON, not presented as CREST-equivalent; `ev_charger`'s ownership
+  probability (0.06) is sourced from CBS (2025). Tracked as follow-up
+  (needs real ownership-survey sourcing) in `.claude/residential/open.md`.
+- `core.equipment.overnight_charging_session` — a new equipment trigger
+  strategy for loads that run one long, near-constant session per day
+  gated only on a daily probability (not on occupancy/activity), needed
+  for `ev_charger` since none of the existing strategies
+  (`probabilistic_event`, `sessions_per_week`) model a multi-hour
+  contiguous block.
+
+### Changed
+
+- `tumble_dryer` ownership_probability updated from CREST's 0.416
+  (2008 UK) to 0.63, based on Milieu Centraal's Monitor Duurzaam Leven
+  2025 (NL survey, ~4700 respondents, May 2025): 37% of Dutch households
+  report having no tumble dryer, implying ~63% ownership.
+- Ownership probabilities downweighted for equipment items that are
+  effectively obsolete in 2026 NL households but were carried over from
+  CREST's 2008 UK figures: `answer_machine` (0.9 → 0.05),
+  `cassette_cd_player` (0.9 → 0.05), `fax` (0.2 → 0.02), `vcr_dvd`
+  (0.896 → 0.15), `cordless_telephone` (0.9 → 0.4). These are judgment
+  calls (`_ownership_note` in the JSON), not cited survey figures; power/
+  timing arrays are untouched and remain CREST-sourced for the residual
+  owners.
+
 ## [6.1.0+enerplanet.1] - 2026-10-02
 
 First release of the enerplanet fork. Package version `6.1.0+enerplanet.1`,

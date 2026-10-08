@@ -254,7 +254,8 @@
     "category": "standby_electronics",
     "rated_power_kw": 0.001,
     "standby_power_kw": 0.0,
-    "ownership_probability": 0.9,
+    "ownership_probability": 0.05,
+    "_ownership_note": "Downweighted from CREST's 0.9 (2008 UK) -- answering machines are effectively obsolete in NL households in 2026, superseded by mobile voicemail. Judgment call, not a cited survey figure; power/timing arrays stay CREST-sourced for the residual owners.",
     "strategy": "flat_always_on",
     "strategy_params": {},
     "weekday": [
@@ -316,7 +317,8 @@
     "category": "entertainment_ict",
     "rated_power_kw": 0.015,
     "standby_power_kw": 0.002,
-    "ownership_probability": 0.9,
+    "ownership_probability": 0.05,
+    "_ownership_note": "Downweighted from CREST's 0.9 (2008 UK) -- cassette/CD players are effectively obsolete in NL households in 2026, superseded by streaming. Judgment call, not a cited survey figure; power/timing arrays stay CREST-sourced for the residual owners.",
     "strategy": "probabilistic_event",
     "strategy_params": {
       "gate": "active",
@@ -444,7 +446,8 @@
     "category": "standby_electronics",
     "rated_power_kw": 0.001,
     "standby_power_kw": 0.0,
-    "ownership_probability": 0.9,
+    "ownership_probability": 0.4,
+    "_ownership_note": "Downweighted from CREST's 0.9 (2008 UK) -- landline handsets are declining but not gone in NL households in 2026 (many still keep one for fixed broadband bundles). Judgment call, not a cited survey figure; power/timing arrays stay CREST-sourced.",
     "strategy": "flat_always_on",
     "strategy_params": {},
     "weekday": [
@@ -707,7 +710,8 @@
     "category": "entertainment_ict",
     "rated_power_kw": 0.037,
     "standby_power_kw": 0.003,
-    "ownership_probability": 0.2,
+    "ownership_probability": 0.02,
+    "_ownership_note": "Downweighted from CREST's 0.2 (2008 UK) -- standalone fax machines are essentially gone from NL households in 2026. Judgment call, not a cited survey figure; power/timing arrays stay CREST-sourced for the residual owners.",
     "strategy": "probabilistic_event",
     "strategy_params": {
       "gate": "active",
@@ -1103,7 +1107,8 @@
     "category": "entertainment_ict",
     "rated_power_kw": 0.0336,
     "standby_power_kw": 0.002,
-    "ownership_probability": 0.896,
+    "ownership_probability": 0.15,
+    "_ownership_note": "Downweighted from CREST's 0.896 (2008 UK) -- VCR/DVD players are mostly displaced by streaming in NL households in 2026. Judgment call, not a cited survey figure; power/timing arrays stay CREST-sourced for the residual owners.",
     "strategy": "probabilistic_event",
     "strategy_params": {
       "gate": "present",
@@ -1631,7 +1636,8 @@
     "category": "laundry",
     "rated_power_kw": 2.5,
     "standby_power_kw": 0.001,
-    "ownership_probability": 0.416,
+    "ownership_probability": 0.63,
+    "_ownership_note": "Updated from CREST's 0.416 (2008 UK) using Milieu Centraal's Monitor Duurzaam Leven 2025 (survey, ~4700 NL respondents, May 2025): 37% of Dutch households report having no tumble dryer, implying ~63% ownership -- a real, current NL figure, not a judgment call like the other _ownership_note items in this file. Power/timing arrays stay CREST-sourced.",
     "strategy": "probabilistic_event",
     "strategy_params": {
       "gate": "active",
@@ -1889,5 +1895,175 @@
       0.4
     ],
     "_comment": "Own aggregate whole-house estimate informed by CREST's lighting submodel structure (a dedicated bulb-level model exists precisely because lighting is a material internal-gain component), but rated_power_kw is scaled down from CREST's 2008 incandescent/CFL figures to a plausible modern LED-era average, not copied."
+  },
+  "laptop": {
+    "name": "laptop",
+    "category": "entertainment_ict",
+    "rated_power_kw": 0.05,
+    "standby_power_kw": 0.005,
+    "ownership_probability": 0.85,
+    "strategy": "probabilistic_event",
+    "strategy_params": {
+      "gate": "active",
+      "intercept": 0.6,
+      "occupant_scaling": 1.0
+    },
+    "_source": "estimated, unsourced -- not CREST (2008 UK survey predates laptops' current ubiquity) and no NL ownership survey consulted. Distinct from personal_computer to represent a mobile per-person device rather than a shared desktop. Needs verification; see .claude/residential/open.md.",
+    "weekday": [
+      0.05, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1,
+      0.15, 0.15, 0.15, 0.15, 0.2, 0.4, 0.6, 0.7, 0.8, 0.7, 0.5, 0.2
+    ],
+    "weekend": [
+      0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5,
+      0.6, 0.7, 0.7, 0.7, 0.7, 0.8, 0.8, 0.8, 0.7, 0.6, 0.4, 0.2
+    ]
+  },
+  "smart_speaker": {
+    "name": "smart_speaker",
+    "category": "entertainment_ict",
+    "rated_power_kw": 0.005,
+    "standby_power_kw": 0.002,
+    "ownership_probability": 0.5,
+    "strategy": "flat_always_on",
+    "strategy_params": {},
+    "_source": "estimated, unsourced -- not CREST (device class did not exist in 2008) and no NL ownership survey consulted. Needs verification; see .claude/residential/open.md.",
+    "weekday": [
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+    ],
+    "weekend": [
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+    ]
+  },
+  "wifi_router": {
+    "name": "wifi_router",
+    "category": "standby_electronics",
+    "rated_power_kw": 0.01,
+    "standby_power_kw": 0.0,
+    "ownership_probability": 0.98,
+    "strategy": "flat_always_on",
+    "strategy_params": {},
+    "_source": "estimated, unsourced -- not CREST (device class did not exist in its current always-on-broadband form in 2008) and no NL ownership survey consulted, though near-universal home-broadband penetration in NL makes 0.98 a low-risk estimate. Needs verification; see .claude/residential/open.md.",
+    "weekday": [
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+    ],
+    "weekend": [
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+    ]
+  },
+  "streaming_stick": {
+    "name": "streaming_stick",
+    "category": "entertainment_ict",
+    "rated_power_kw": 0.005,
+    "standby_power_kw": 0.002,
+    "ownership_probability": 0.6,
+    "strategy": "probabilistic_event",
+    "strategy_params": {
+      "gate": "present",
+      "intercept": 0.5,
+      "occupant_scaling": 0.15
+    },
+    "_source": "estimated, unsourced -- not CREST (device class did not exist in 2008) and no NL ownership survey consulted. Mirrors tv_1's presence-driven gate since it's watched alongside a TV. Needs verification; see .claude/residential/open.md.",
+    "weekday": [
+      0.05, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1,
+      0.15, 0.15, 0.15, 0.15, 0.2, 0.4, 0.6, 0.7, 0.8, 0.7, 0.5, 0.2
+    ],
+    "weekend": [
+      0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5,
+      0.6, 0.7, 0.7, 0.7, 0.7, 0.8, 0.8, 0.8, 0.7, 0.6, 0.4, 0.2
+    ]
+  },
+  "robot_vacuum": {
+    "name": "robot_vacuum",
+    "category": "cleaning",
+    "rated_power_kw": 0.06,
+    "standby_power_kw": 0.005,
+    "ownership_probability": 0.25,
+    "strategy": "probabilistic_event",
+    "strategy_params": {
+      "gate": "none",
+      "intercept": 0.08,
+      "occupant_scaling": 0.3
+    },
+    "_source": "estimated, unsourced -- not CREST (device class was a niche product in 2008) and no NL ownership survey consulted. Gated on 'none' rather than presence/activity since these are typically scheduled to run while occupants are away. Needs verification; see .claude/residential/open.md.",
+    "weekday": [
+      0.05, 0.05, 0.05, 0.05, 0.05, 0.1, 0.15, 0.2, 0.2, 0.15, 0.1, 0.1,
+      0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05, 0.05
+    ],
+    "weekend": [
+      0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.1, 0.15, 0.2, 0.2, 0.2, 0.15,
+      0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.05, 0.05, 0.05
+    ]
+  },
+  "air_fryer": {
+    "name": "air_fryer",
+    "category": "kitchen",
+    "rated_power_kw": 1.5,
+    "standby_power_kw": 0.0,
+    "ownership_probability": 0.55,
+    "strategy": "probabilistic_event",
+    "strategy_params": {
+      "gate": "active",
+      "intercept": 0.03,
+      "occupant_scaling": 0.5
+    },
+    "_source": "estimated, unsourced -- not CREST (device did not exist in its current form in 2008) and no NL ownership survey consulted. Weekday/weekend shape reused from the kitchen category's meal-time pattern. Needs verification; see .claude/residential/open.md.",
+    "weekday": [
+      0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.2, 0.4, 0.2, 0.1, 0.1, 0.1,
+      0.7, 0.7, 0.2, 0.1, 0.1, 0.7, 0.8, 0.7, 0.2, 0.1, 0.05, 0.01
+    ],
+    "weekend": [
+      0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.6,
+      0.8, 0.8, 0.7, 0.5, 0.3, 0.7, 0.8, 0.8, 0.5, 0.2, 0.05, 0.01
+    ]
+  },
+  "coffee_machine": {
+    "name": "coffee_machine",
+    "category": "kitchen",
+    "rated_power_kw": 1.0,
+    "standby_power_kw": 0.005,
+    "ownership_probability": 0.6,
+    "strategy": "probabilistic_event",
+    "strategy_params": {
+      "gate": "active",
+      "intercept": 0.04,
+      "occupant_scaling": 1.0
+    },
+    "_source": "estimated, unsourced -- not CREST (kettle is CREST's closest hot-drink item) and no NL ownership survey consulted. Weekday/weekend shape reused from the kitchen category's meal-time pattern. Needs verification; see .claude/residential/open.md.",
+    "weekday": [
+      0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.2, 0.4, 0.2, 0.1, 0.1, 0.1,
+      0.7, 0.7, 0.2, 0.1, 0.1, 0.7, 0.8, 0.7, 0.2, 0.1, 0.05, 0.01
+    ],
+    "weekend": [
+      0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.6,
+      0.8, 0.8, 0.7, 0.5, 0.3, 0.7, 0.8, 0.8, 0.5, 0.2, 0.05, 0.01
+    ]
+  },
+  "ev_charger": {
+    "name": "ev_charger",
+    "category": "ev_charging",
+    "rated_power_kw": 7.4,
+    "standby_power_kw": 0.0,
+    "ownership_probability": 0.06,
+    "strategy": "overnight_charging_session",
+    "strategy_params": {
+      "daily_probability": 0.6,
+      "window_start_hour": 18,
+      "window_end_hour": 30,
+      "duration_hours": 4,
+      "occupant_scaling": 0.0
+    },
+    "_source": "ownership_probability sourced from CBS (2025), 'Meer dan 1 miljoen stekkerauto's in Nederland' (https://www.cbs.nl/nl-nl/nieuws/2025/22/meer-dan-1-miljoen-stekkerauto-s-in-nederland): 6% of NL private passenger cars are plug-in as of early 2025. rated_power_kw (7.4 kW single-phase 32A home wallbox) and strategy_params (evening/overnight plug-in window, ~4h session, not charged every day) are estimated, unsourced -- not CREST (no EVs in its 2008 UK dataset). Needed a genuinely new trigger strategy (core.equipment.overnight_charging_session) since a multi-hour near-constant session gated on occupancy is not what probabilistic_event/sessions_per_week model. Needs verification; see .claude/residential/open.md.",
+    "weekday": [
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+    ],
+    "weekend": [
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+    ]
   }
 }

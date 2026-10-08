@@ -1,6 +1,27 @@
 # Open issues / TODOs — households
 
 ## >>> NEXT MAJOR TASKS <<<
+- [households] **8 new equipment items added 2026-09-18 need real
+  ownership/power sourcing** — `laptop`, `smart_speaker`, `wifi_router`,
+  `streaming_stick`, `robot_vacuum`, `air_fryer`, `coffee_machine` were
+  added to `households/data/equipment.json` to cover common modern NL
+  appliances CREST's 2008 UK survey predates, but their
+  `ownership_probability`/`rated_power_kw`/`strategy_params` are
+  estimates, not citations (flagged `_source: "estimated, unsourced"` in
+  each entry). `ev_charger`'s `ownership_probability` (0.06) *is* sourced
+  (CBS, 2025, "Meer dan 1 miljoen stekkerauto's in Nederland"), but its
+  `rated_power_kw`/session-timing `strategy_params` are still estimates.
+  Milieu Centraal's "Monitor Duurzaam Leven 2025" (used to source the
+  `tumble_dryer` update in the same commit) does **not** cover most of
+  these — it's a sustainability-attitudes survey, not an appliance
+  census — so a different source (e.g. CBS StatLine, once a current
+  successor to the discontinued `37926` table is found, or Milieu
+  Centraal / GfK smart-appliance-ownership figures) is needed. The
+  five CREST items downweighted in the same change
+  (`answer_machine`, `cassette_cd_player`, `fax`, `vcr_dvd`,
+  `cordless_telephone`) are judgment calls for the same reason — real
+  NL ownership figures for these would replace the `_ownership_note`
+  rationale with an actual citation.
 - [households] **`ownership_probability` is household-size-independent —
   the remaining half of the person-count gap (2026-08-28)** — a real
   5-person household is likelier to own a dishwasher, a tumble dryer and
