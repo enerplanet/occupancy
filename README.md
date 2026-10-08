@@ -140,7 +140,7 @@ under each subpackage's own `data/` folder (`config/data/`,
 | --- | --- |
 | `config/data/default_scenario.json` | Year, persons/capacity, seed, building type, appliance flags, output path |
 | `households/data/archetypes/*.json` | Per-archetype occupancy probabilities, generator strategy, equipment overrides |
-| `households/data/equipment.json` | 29 household appliances as `EquipmentSpec` rows (ownership/power figures sourced from the CREST Domestic Electricity Demand Model) |
+| `households/data/equipment.json` | 37 household appliances as `EquipmentSpec` rows (29 sourced from the CREST Domestic Electricity Demand Model; 8 added for 2026 NL households, mostly estimated — see `CHANGELOG.md`) |
 | `services_buildings/data/<type>/schedule.json` | Capacity, generator strategy + params (open hours, etc.) |
 | `services_buildings/data/<type>/equipment.json` | That building type's `EquipmentSpec` rows |
 

@@ -275,7 +275,7 @@ def test_equipment_types_top_level_export() -> None:
     into the deep households.electricity module path."""
     assert occupancy.EQUIPMENT_TYPES is EQUIPMENT_TYPES
     assert set(EQUIPMENT_TYPES) == set(default_equipment_table())
-    assert len(EQUIPMENT_TYPES) == 29
+    assert len(EQUIPMENT_TYPES) == 37
     assert EQUIPMENT_TYPES["hob"].category == "kitchen"
 
 

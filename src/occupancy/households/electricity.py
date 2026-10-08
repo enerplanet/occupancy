@@ -22,7 +22,7 @@ _BASE_EQUIPMENT: dict[str, EquipmentSpec] = normalize_equipment_table(
     load_json_resource(_PACKAGE, _EQUIPMENT_PATH)
 )
 
-# Top-level-exportable registry of the 29 household equipment ids, mirroring
+# Top-level-exportable registry of the household equipment ids, mirroring
 # `SERVICE_BUILDING_TYPES`'s promotion (buem's `occupancy_gains_handoff.md`
 # Gap 3) -- closes buem's `occupancy_module_activities.md` item 1. Lets a
 # downstream consumer validate/enumerate against the live registry (e.g.
@@ -50,6 +50,8 @@ _LEGACY_FLAG_TO_EQUIPMENT: dict[str, list[str]] = {
         "microwave",
         "kettle",
         "small_cooking_group",
+        "air_fryer",
+        "coffee_machine",
     ],
     "has_laundry": [
         "dish_washer",
@@ -57,9 +59,16 @@ _LEGACY_FLAG_TO_EQUIPMENT: dict[str, list[str]] = {
         "washing_machine",
         "washer_dryer",
     ],
-    "has_cleaning": ["vacuum"],
+    "has_cleaning": ["vacuum", "robot_vacuum"],
     "has_ironing": ["iron"],
-    "has_tv": ["tv_1", "tv_2", "tv_3", "vcr_dvd", "tv_receiver_box"],
+    "has_tv": [
+        "tv_1",
+        "tv_2",
+        "tv_3",
+        "vcr_dvd",
+        "tv_receiver_box",
+        "streaming_stick",
+    ],
     "has_lighting": ["lighting"],
     "has_other": [
         "answer_machine",
@@ -70,6 +79,10 @@ _LEGACY_FLAG_TO_EQUIPMENT: dict[str, list[str]] = {
         "fax",
         "personal_computer",
         "printer",
+        "laptop",
+        "smart_speaker",
+        "wifi_router",
+        "ev_charger",
     ],
 }
 

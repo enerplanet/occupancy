@@ -242,6 +242,46 @@ def sessions_per_week(
     return power
 
 
+def overnight_charging_session(
+    spec: EquipmentSpec, ctx: EquipmentContext
+) -> np.ndarray:
+    """Fires at most one contiguous multi-hour block per calendar day,
+    independent of occupancy — for loads like an EV home charger that run
+    a long session at (near-)constant draw rather than firing on the
+    activity/presence gates every other strategy here uses.
+
+    ``strategy_params``:
+    - ``daily_probability``: chance the household charges on a given day
+      (default 1.0 — every day).
+    - ``window_start_hour`` / ``window_end_hour``: the session's start hour
+      is drawn uniformly from this range; ``window_end_hour`` may exceed 24
+      to let the window span past midnight (e.g. 18-30 for "6pm-6am"), but
+      the session itself is clipped at the profile's end, not wrapped.
+    - ``duration_hours``: session length.
+    """
+    power = np.zeros(len(ctx.profile), dtype=float)
+    params = spec.strategy_params
+    daily_probability = params.get("daily_probability", 1.0)
+    window_start = params.get("window_start_hour", 18)
+    window_end = params.get("window_end_hour", 30)
+    duration = int(params.get("duration_hours", 4))
+
+    n = len(ctx.profile)
+    day_starts = np.flatnonzero(ctx.hours == 0)
+    if len(day_starts) == 0 or day_starts[0] != 0:
+        day_starts = np.concatenate(([0], day_starts))
+
+    for day_start_idx in day_starts:
+        if ctx.rng.random() >= daily_probability:
+            continue
+        start_hour = ctx.rng.uniform(window_start, window_end)
+        start_idx = day_start_idx + int(start_hour)
+        end_idx = min(start_idx + duration, n)
+        if start_idx < n:
+            power[start_idx:end_idx] = spec.rated_power_kw
+    return power
+
+
 def linear_in_occupants(
     spec: EquipmentSpec, ctx: EquipmentContext
 ) -> np.ndarray:
@@ -259,6 +299,7 @@ _STRATEGIES: dict[str, StrategyFn] = {
     "flat_always_on": flat_always_on,
     "sessions_per_week": sessions_per_week,
     "linear_in_occupants": linear_in_occupants,
+    "overnight_charging_session": overnight_charging_session,
 }
 
 
