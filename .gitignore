@@ -65,3 +65,8 @@ push.ps1
 
 # Context
 occupancy_improvement*.txt
+
+# Claude Code context (CLAUDE.md, .claude/): local only, not tracked on the
+# enerplanet branch. Upstream tracks them; untrack again after a merge from main.
+CLAUDE.md
+.claude/

@@ -233,3 +233,9 @@ pytest
 mypy src
 python validate.py
 ```
+
+## Branches
+
+- `enerplanet` is the default branch and the release branch. Every change made in this fork lives here, and every tag (`vX.Y.Z-enerplanet.N`, package version `X.Y.Z+enerplanet.N`) is cut from it.
+- `main` tracks `UU-BUEM/occupancy` `main` unchanged. Upstream changes arrive on `main` first and are merged into `enerplanet` from there; conflicts are resolved on `enerplanet`.
+- `.claude/` and `CLAUDE.md` are not tracked on `enerplanet`. A merge from `main` that touches them re-adds them; run `git rm -r --cached .claude CLAUDE.md` before committing the merge.
