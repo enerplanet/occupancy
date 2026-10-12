@@ -3,6 +3,7 @@
 from occupancy.core.buem_adapter import to_buem_profiles
 from occupancy.core.disaggregation import estimate_equipment_usage
 from occupancy.core.result import OccupancyResult
+from occupancy.core.seed import building_seed
 from occupancy.demand import (
     DEFAULT_ARCHETYPE_BY_BUILDING_TYPE,
     DEFAULT_NUM_PERSONS,
@@ -19,6 +20,7 @@ from occupancy.households import (
     HOUSEHOLD_ARCHETYPES,
     ElectricityConsumptionProfile,
     HouseholdProfile,
+    MultiDwellingProfile,
     generate_dhw_draws,
 )
 from occupancy.services_buildings import (
@@ -48,11 +50,13 @@ __all__ = [
     "BuildingDemand",
     "ElectricityConsumptionProfile",
     "HouseholdProfile",
+    "MultiDwellingProfile",
     "OccupancyProfile",
     "OccupancyResult",
     "ServiceBuildingProfile",
     "__version__",
     "building_demand",
+    "building_seed",
     "derive_service_capacity",
     "equipment_table",
     "estimate_equipment_usage",

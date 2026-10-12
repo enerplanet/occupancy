@@ -51,6 +51,32 @@ import hashlib
 _SEED_MASK = (1 << 63) - 1
 
 
+def building_seed(identifier: str, *, year: int) -> int:
+    """Stable seed derived from a caller-supplied external building
+    identifier (e.g. a building/parcel ID from a GIS or grid-model
+    dataset), rather than from this profile's own construction inputs.
+
+    Closes the residual limitation :func:`derive_default_seed` documents
+    above: two real buildings that share every construction input
+    (building_type/archetype, num_persons/capacity, year, region) collide
+    onto the same default seed, since nothing about *which* building it is
+    reaches that hash. A caller who has a real building identifier (a grid
+    model, a cadastral dataset, ...) passes ``building_seed(identifier,
+    year=year)`` as the explicit ``seed=`` override on
+    ``HouseholdProfile``/``ServiceBuildingProfile`` to get a stable,
+    per-building seed instead -- same identifier and year always
+    reproduces the same profile, and different identifiers (almost
+    certainly) diverge, without the caller inventing and coordinating
+    their own hashing scheme. ``year`` is a separate parameter (not folded
+    into ``identifier`` by the caller) so the same building's profile
+    changes across modeling years rather than being frozen to its first
+    one.
+    """
+    key = f"building|{identifier}|{year}"
+    digest = hashlib.sha256(key.encode("utf-8")).digest()
+    return int.from_bytes(digest[:8], "big") & _SEED_MASK
+
+
 def derive_default_seed(
     *,
     kind: str,
@@ -76,4 +102,4 @@ def derive_default_seed(
     return int.from_bytes(digest[:8], "big") & _SEED_MASK
 
 
-__all__ = ["derive_default_seed"]
+__all__ = ["building_seed", "derive_default_seed"]

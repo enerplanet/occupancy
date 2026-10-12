@@ -7,11 +7,13 @@ from occupancy.core.occupancy_engine import (
     register_generator,
 )
 from occupancy.core.result import OccupancyResult
+from occupancy.core.seed import building_seed
 
 __all__ = [
     "EquipmentSpec",
     "OccupancyGenerationContext",
     "OccupancyResult",
+    "building_seed",
     "register_generator",
     "register_strategy",
 ]

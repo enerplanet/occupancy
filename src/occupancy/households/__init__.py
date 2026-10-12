@@ -10,6 +10,10 @@ from occupancy.households.archetypes import (
     get_archetype,
     register_archetype,
 )
+from occupancy.households.building import (
+    DEFAULT_DWELLING_CAP,
+    MultiDwellingProfile,
+)
 from occupancy.households.dhw import (
     generate_dhw_draws,
     load_tapping_categories,
@@ -23,11 +27,13 @@ from occupancy.households.electricity import (
 from occupancy.households.household_profile import HouseholdProfile
 
 __all__ = [
+    "DEFAULT_DWELLING_CAP",
     "EQUIPMENT_TYPES",
     "HOUSEHOLD_ARCHETYPES",
     "ArchetypeSpec",
     "ElectricityConsumptionProfile",
     "HouseholdProfile",
+    "MultiDwellingProfile",
     "default_equipment_table",
     "generate_dhw_draws",
     "get_archetype",

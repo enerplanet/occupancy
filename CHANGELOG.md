@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- `occupancy.MultiDwellingProfile` (`households/building.py`) — aggregates
+  `n = min(round(dwellings), cap)` distinct `HouseholdProfile` draws for
+  one multi-dwelling building (own seed per dwelling, summed occupancy
+  fractions/electricity/cooking signal, optional DHW via
+  `include_dhw=True`), scaled by `dwellings / n`, instead of one household
+  scaled by the dwelling count. Fixes #14: scaling a single household by N
+  made every dwelling peak at the same hour, so a building's coincident
+  peak was overstated by a factor that didn't diversify with size
+  (measured peak/mean ratio ~17 regardless of N); summing `n` distinct
+  households instead gives a peak/mean ratio of ~5.8 at `n=20`. `cap`
+  defaults to 20 (`DEFAULT_DWELLING_CAP`), bounding generation cost once
+  the diversity benefit has saturated. Household sizes across dwellings
+  bracket `mean_num_persons` (the two adjacent integers) so the building's
+  mean household size is preserved exactly.
+- `occupancy.core.seed.building_seed(identifier, *, year)` (also exported
+  as `occupancy.building_seed`) — a stable seed derived from a
+  caller-supplied external building identifier (e.g. a grid-model or
+  cadastral building ID) rather than from a profile's own construction
+  inputs, for passing as an explicit `seed=` override. Fixes #15: two
+  buildings sharing every construction input (type/archetype,
+  num_persons/capacity, year, region) but no external identifier
+  previously collided onto the same default seed, producing byte-identical
+  profiles and overstated coincident-demand peaks in portfolio/grid
+  models.
+
 ## [6.2.0+enerplanet.1] - 2026-10-08
 
 Package version `6.2.0+enerplanet.1`, git tag `v6.2.0-enerplanet.1`.
