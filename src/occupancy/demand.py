@@ -4,7 +4,8 @@ Composes the household and service-building generators with the rules a
 building model needs around them: household size by building type,
 country and region; a default archetype per building type; service
 capacity from floor area; the two-household blend that reproduces a
-fractional mean household size; scaling to the dwellings in a building;
+fractional mean household size; one household per dwelling, summed, for
+a multi-dwelling building;
 and the cooking-carrier balance between electricity and internal gains.
 These rules lived in the buem thermal model until 6.1.0+enerplanet.1 and
 moved here so that buem and the grid model size from the same function.
@@ -22,18 +23,27 @@ from __future__ import annotations
 
 import logging
 import math
+import operator
+from collections.abc import Iterable
 from dataclasses import dataclass, replace
-from functools import lru_cache
+from functools import lru_cache, reduce
 from typing import Any
 
 import pandas as pd
 
 from occupancy.core.buem_adapter import to_buem_profiles
 from occupancy.core.loader import load_csv_resource
+from occupancy.core.seed import building_seed
 from occupancy.households import (
     ElectricityConsumptionProfile,
     HouseholdProfile,
     generate_dhw_draws,
+)
+from occupancy.households.building import (
+    _DWELLING_SEED_STRIDE,
+    _SEED_MODULUS,
+    DEFAULT_DWELLING_CAP,
+    MultiDwellingProfile,
 )
 from occupancy.households.electricity import EQUIPMENT_TYPES
 from occupancy.services_buildings import ServiceBuildingProfile
@@ -308,11 +318,13 @@ def _generate_household(
     year: int,
     seed: int | None,
     equipment: Any,
+    dhw_seed: int | None = None,
 ) -> _Household:
     """One integer-sized household: occupancy result, DHW draws and
-    cooking energy. DHW draws take ``seed=None`` on purpose so the
-    package derives its own deterministic seed, decorrelated from the
-    electricity draws."""
+    cooking energy. A single dwelling leaves ``dhw_seed`` None so the
+    DHW module derives its own deterministic seed, decorrelated from the
+    electricity draws; a multi-dwelling building passes one per dwelling
+    so that equal-sized dwellings do not replay the same draws."""
     household = HouseholdProfile(
         num_persons=num_persons, year=year, seed=seed, archetype=archetype
     )
@@ -325,7 +337,7 @@ def _generate_household(
         result.profile,
         num_persons=num_persons,
         cooking_active=result.profile.get("cooking_active"),
-        seed=None,
+        seed=dhw_seed,
     )
     return _Household(
         result, draws, _cooking_energy(household, elec_gen, seed)
@@ -383,6 +395,7 @@ def building_demand(
     floor_area_m2: float | None = None,
     cooking_carrier: str = "electric",
     seed: int | None = None,
+    building_id: str | None = None,
     num_persons: float | None = None,
     archetype: str | None = None,
     capacity: int | None = None,
@@ -397,12 +410,17 @@ def building_demand(
     their household size from the bundled table by ``country`` and
     ``region_code`` unless ``num_persons`` is given, their archetype
     from :data:`DEFAULT_ARCHETYPE_BY_BUILDING_TYPE` unless ``archetype``
-    is given, and are scaled to ``residential_units`` dwellings. Service
-    buildings need ``floor_area_m2`` and take ``capacity`` from it unless
-    given. A measured ``elec_load`` replaces the generated electricity
-    and is never rescaled. ``cooking_carrier`` moves cooking energy out
-    of electricity for ``"gas"``, corrects internal gains for both
-    ``"gas"`` and ``"electric"``, and does nothing for ``"none"``.
+    is given. A building with more than one dwelling sums one household
+    per dwelling, up to 20 distinct households scaled to
+    ``residential_units``, so that its dwellings peak at different hours.
+    Service buildings need ``floor_area_m2`` and take ``capacity`` from
+    it unless given. A measured ``elec_load`` replaces the generated
+    electricity and is never rescaled. ``cooking_carrier`` moves cooking
+    energy out of electricity for ``"gas"``, corrects internal gains for
+    both ``"gas"`` and ``"electric"``, and does nothing for ``"none"``.
+    ``building_id`` seeds the generation from that identifier and
+    ``year`` (:func:`occupancy.building_seed`) when no ``seed`` is given,
+    so buildings with identical inputs still get distinct profiles.
     """
     carrier = str(cooking_carrier).lower()
     if carrier not in COOKING_CARRIERS:
@@ -410,9 +428,11 @@ def building_demand(
             f"cooking_carrier must be one of {COOKING_CARRIERS}, "
             f"got {cooking_carrier!r}."
         )
+    if seed is None and building_id:
+        seed = building_seed(str(building_id), year=year)
     units = float(residential_units or 1.0)
     if building_type in RESIDENTIAL_BUILDING_TYPES:
-        profiles, draws, cooking, mean, used_archetype = _residential(
+        profiles, draws, cooking, mean, used_archetype, scale = _residential(
             building_type,
             country,
             region_code,
@@ -422,6 +442,7 @@ def building_demand(
             archetype,
             equipment,
             elec_load,
+            units,
         )
         used_capacity: int | None = None
         elec_load_as_gain = True
@@ -437,15 +458,16 @@ def building_demand(
         )
         draws, cooking, mean, used_archetype = None, None, None, None
         elec_load_as_gain = False
+        scale = units
 
-    if units > 1.0:
-        profiles["Q_ig"] = profiles["Q_ig"] * units
+    if scale != 1.0:
+        profiles["Q_ig"] = profiles["Q_ig"] * scale
         if elec_load is None:
-            profiles["elecLoad"] = profiles["elecLoad"] * units
+            profiles["elecLoad"] = profiles["elecLoad"] * scale
         if draws is not None:
-            draws = draws * units
+            draws = draws * scale
         if cooking is not None:
-            cooking = cooking * units
+            cooking = cooking * scale
 
     if cooking is not None:
         _apply_cooking_balance(
@@ -486,7 +508,14 @@ def _residential(
     archetype: str | None,
     equipment: Any,
     elec_load: pd.Series | None,
-) -> tuple[dict[str, pd.Series], pd.DataFrame, pd.Series | None, float, str]:
+    units: float,
+) -> tuple[
+    dict[str, pd.Series], pd.DataFrame, pd.Series | None, float, str, float
+]:
+    """Profiles for one residential building and the factor that scales
+    them to ``units`` dwellings: the two-household blend around ``mean``
+    for one dwelling, scaled by ``units``; distinct households summed for
+    more, scaled by ``units / n``."""
     if num_persons is not None:
         mean = max(1.0, float(num_persons))
     else:
@@ -501,8 +530,30 @@ def _residential(
             float(resolved if resolved is not None else DEFAULT_NUM_PERSONS),
         )
     used_archetype = archetype or resolve_archetype(building_type)
+    n = max(1, min(round(units), DEFAULT_DWELLING_CAP))
+    if n > 1:
+        profiles, draws, cooking = _summed_households(
+            units, mean, used_archetype, year, seed, equipment, elec_load
+        )
+        return profiles, draws, cooking, mean, used_archetype, units / n
+    profiles, draws, cooking = _blended_household(
+        mean, used_archetype, year, seed, equipment, elec_load
+    )
+    return profiles, draws, cooking, mean, used_archetype, units
+
+
+def _blended_household(
+    mean: float,
+    archetype: str,
+    year: int,
+    seed: int | None,
+    equipment: Any,
+    elec_load: pd.Series | None,
+) -> tuple[dict[str, pd.Series], pd.DataFrame, pd.Series | None]:
+    """The two integer household sizes around ``mean``, blended by the
+    weight :func:`bracket_household_size` gives the upper one."""
     lower_n, upper_n, upper_weight = bracket_household_size(mean)
-    lower = _generate_household(lower_n, used_archetype, year, seed, equipment)
+    lower = _generate_household(lower_n, archetype, year, seed, equipment)
     if elec_load is not None:
         elec_load = _realign(
             elec_load, lower.result.profile.index, "elec_load"
@@ -510,9 +561,7 @@ def _residential(
     profiles = to_buem_profiles(lower.result, elec_load=elec_load)
     draws, cooking = lower.draws, lower.cooking
     if upper_weight > 0.0:
-        upper = _generate_household(
-            upper_n, used_archetype, year, seed, equipment
-        )
+        upper = _generate_household(upper_n, archetype, year, seed, equipment)
         upper_profiles = to_buem_profiles(upper.result, elec_load=elec_load)
         for key in _BLENDED_KEYS:
             if key == "elecLoad" and elec_load is not None:
@@ -523,7 +572,76 @@ def _residential(
         draws = _blend(draws, upper.draws, upper_weight)
         if cooking is not None and upper.cooking is not None:
             cooking = _blend(cooking, upper.cooking, upper_weight)
-    return profiles, draws, cooking, mean, used_archetype
+    return profiles, draws, cooking
+
+
+def _summed_households(
+    units: float,
+    mean: float,
+    archetype: str,
+    year: int,
+    seed: int | None,
+    equipment: Any,
+    elec_load: pd.Series | None,
+) -> tuple[dict[str, pd.Series], pd.DataFrame, pd.Series | None]:
+    """One household per dwelling, each from its own seed and sized so
+    the sizes average ``mean`` (:class:`MultiDwellingProfile`), summed.
+    Occupancy fractions are the person-weighted mean; ``cooking_active``
+    is true while any dwelling cooks. A measured ``elec_load`` is the
+    whole building's and replaces the summed electricity unscaled."""
+    block = MultiDwellingProfile(
+        dwellings=units,
+        mean_num_persons=mean,
+        year=year,
+        archetype=archetype,
+        seed=seed,
+    )
+    households = []
+    for member in block.get_households():
+        assert member.seed is not None
+        offset = _DWELLING_SEED_STRIDE // 2
+        dhw_seed = (member.seed + offset) % _SEED_MODULUS
+        households.append(
+            _generate_household(
+                member.num_persons,
+                archetype,
+                year,
+                member.seed,
+                equipment,
+                dhw_seed,
+            )
+        )
+    per_dwelling = [to_buem_profiles(hh.result) for hh in households]
+    persons = [float(hh.result.num_persons) for hh in households]
+    profiles: dict[str, pd.Series] = {
+        key: _total(p[key] for p in per_dwelling).rename(key)
+        for key in _BLENDED_KEYS
+    }
+    for key in ("occ_nothome", "occ_sleeping"):
+        weighted = _total(
+            p[key] * w for p, w in zip(per_dwelling, persons, strict=True)
+        )
+        profiles[key] = (weighted / sum(persons)).rename(key)
+    cooking_flags = [
+        p["cooking_active"].astype(bool)
+        for p in per_dwelling
+        if "cooking_active" in p
+    ]
+    if cooking_flags:
+        any_cooking = reduce(operator.or_, cooking_flags)
+        profiles["cooking_active"] = any_cooking.rename("cooking_active")
+    if elec_load is not None:
+        measured = _realign(elec_load, profiles["elecLoad"].index, "elec_load")
+        profiles["elecLoad"] = measured.rename("elecLoad")
+    draws = _total(hh.draws for hh in households)
+    cookings = [hh.cooking for hh in households if hh.cooking is not None]
+    cooking = _total(cookings).rename("cooking_kwh") if cookings else None
+    return profiles, draws, cooking
+
+
+def _total(parts: Iterable[Any]) -> Any:
+    """Element-wise sum of Series or DataFrames sharing an index."""
+    return reduce(operator.add, parts)
 
 
 def _service(
