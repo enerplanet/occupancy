@@ -4,8 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [6.3.0+enerplanet.1] - 2026-10-12
+
+Package version `6.3.0+enerplanet.1`, git tag `v6.3.0-enerplanet.1`.
+Merges upstream `UU-BUEM/occupancy` main at f1e8edf (upstream's 6.1.0),
+which fixes upstream issues 14 and 15.
+
+**Results change for every building with more than one dwelling.**
+`building_demand` sums one household per dwelling instead of scaling one
+household by the dwelling count, so a building's peak falls and its
+annual total follows the mix of dwellings drawn rather than one
+dwelling's draw times the count. MFH NL, 20 dwellings, 2018: peak 85 to
+25 kW, peak/mean 18.5 to 4.9, hot-water peak 2,410 to 623 litres per
+hour, generation time 0.06 to 0.57 s. Pinned figures: MFH NL 3 dwellings
+6,053 to 7,219 kWh electricity, peak 12.8 to 7.4 kW; AB DE 12 dwellings
+23,950 to 29,460 kWh, peak 57.9 to 19.2 kW. Single dwellings and service
+buildings are unchanged.
+
 ### Added
 
+- `building_demand(building_id=...)`: when no `seed` is given, the
+  generation is seeded from the identifier and the year through
+  `building_seed`, so two buildings with the same type, size, year and
+  region no longer share a profile. Without a `building_id` the default
+  seed is unchanged.
 - `occupancy.MultiDwellingProfile` (`households/building.py`) — aggregates
   `n = min(round(dwellings), cap)` distinct `HouseholdProfile` draws for
   one multi-dwelling building (own seed per dwelling, summed occupancy
@@ -30,6 +52,23 @@ All notable changes to this project will be documented in this file.
   previously collided onto the same default seed, producing byte-identical
   profiles and overstated coincident-demand peaks in portfolio/grid
   models.
+
+### Changed
+
+- `building_demand` builds a residential building with more than one
+  dwelling from `n = min(round(residential_units), 20)` distinct
+  households (sizes and seeds from `MultiDwellingProfile`), sums their
+  electricity, internal gains, hot-water draws and cooking energy, and
+  scales the sum by `residential_units / n`. Occupancy fractions are the
+  person-weighted mean, `cooking_active` is true while any dwelling
+  cooks, and each dwelling's hot-water draws take their own seed. A
+  dwelling count that rounds to one keeps the two-household blend. A
+  measured `elec_load` is still used unscaled.
+- `tests/test_building_demand.py` pins this release's output
+  (`tests/data/building_demand_reference_6_3_0_enerplanet_1.json`). The
+  two multi-dwelling cases were regenerated, the other seven are the
+  6.2.0+enerplanet.1 capture unchanged, and the fixture no longer carries
+  `dhw_kwh`, which buem prices rather than this package.
 
 ## [6.2.0+enerplanet.1] - 2026-10-08
 
